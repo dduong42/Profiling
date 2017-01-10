@@ -3,10 +3,17 @@
 # define _GNU_SOURCE
 # include <stdlib.h>
 
-struct		s_malloc_data
+enum		type
 {
-	void	*ptr;
-	size_t	size;
+	MALLOC,
+	FREE
+};
+
+struct			data
+{
+	void		*ptr;
+	size_t		size;
+	enum type	type;
 };
 
 #endif

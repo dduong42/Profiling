@@ -2,7 +2,7 @@ LIB = profiling.so
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra
 LIB = profiling.so
-NAME = my_program
+NAME = benchmark/my_program
 READER = reader
 RM = rm -f
 
@@ -10,7 +10,7 @@ RM = rm -f
 
 all: $(LIB) $(NAME) $(READER)
 
-$(NAME): main.c
+$(NAME): benchmark/main.c
 	$(CC) $< -o $@
 
 $(LIB): profiling.c profiler.h
@@ -20,4 +20,4 @@ $(READER): reader.c profiler.h
 	$(CC) $(CFLAGS) -include profiler.h $< -o $@
 
 clean:
-	$(RM) $(LIB) $(NAME) $(READER) malloc.log free.log
+	$(RM) $(LIB) $(NAME) $(READER) memory.log

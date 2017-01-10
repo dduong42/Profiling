@@ -1,7 +1,6 @@
 /* Needed for RTLD_NEXT */
 #define _GNU_SOURCE
-#define MALLOC_LOG "malloc.log"
-#define FREE_LOG "free.log"
+#define LOG "memory.log"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -14,27 +13,33 @@
 #include <stdint.h>
 #include "profiler.h"
 
-void						*malloc(size_t size) {
-	struct s_malloc_data	s;
-    void					*(*real_malloc)(size_t);
-	static int				fd = 0;
+int				g_fd;
 
-	if (!fd)
-		fd = open(MALLOC_LOG, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+void			*malloc(size_t size) {
+	struct data	s;
+    void		*(*real_malloc)(size_t);
+
+	if (!g_fd)
+		g_fd = open(LOG, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     real_malloc = dlsym(RTLD_NEXT, "malloc");
+	s.type = MALLOC;
     s.ptr = real_malloc(size);
 	s.size = size;
-	write(fd, &s, sizeof(struct s_malloc_data));
+	write(g_fd, &s, sizeof(s));
     return (s.ptr);
 }
 
-void		free(void *ptr) {
-    void	(*real_free)(void *);
-	static int	fd = 0;
+void			free(void *ptr) {
+	struct data	s;
+    void		(*real_free)(void *);
 
-	if (!fd)
-		fd = open(FREE_LOG, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	write(fd, &ptr, sizeof(ptr));
+	if (!g_fd)
+		g_fd = open(LOG, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+
+	s.type = FREE;
+	s.size = 0;
+	s.ptr = ptr;
+	write(g_fd, &s, sizeof(s));
     real_free = dlsym(RTLD_NEXT, "free");
     return (real_free(ptr));
 }
