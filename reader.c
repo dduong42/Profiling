@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "profiler.h"
+#include "profiling.h"
 
 int				main(int ac, char **av)
 {

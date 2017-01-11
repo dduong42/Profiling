@@ -13,11 +13,11 @@ all: $(LIB) $(NAME) $(READER)
 $(NAME): benchmark/main.c
 	$(CC) $< -o $@
 
-$(LIB): profiling.c profiler.h
-	$(CC) $(CFLAGS) -include profiler.h -shared -fPIC -o $@ $< -ldl -lrt
+$(LIB): profiling.c profiling.h
+	$(CC) $(CFLAGS) -include profiling.h -shared -fPIC -o $@ $< -ldl -lrt
 
-$(READER): reader.c profiler.h
-	$(CC) $(CFLAGS) -include profiler.h $< -o $@
+$(READER): reader.c profiling.h
+	$(CC) $(CFLAGS) -include profiling.h $< -o $@
 
 clean:
 	$(RM) $(LIB) $(NAME) $(READER) memory.log

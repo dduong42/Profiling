@@ -5,7 +5,7 @@
 #include <fcntl.h>
 #include <dlfcn.h>
 #include <unistd.h>
-#include "profiler.h"
+#include "profiling.h"
 
 int				g_fd;
 
