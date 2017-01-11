@@ -17,6 +17,7 @@ void			*malloc(size_t size)
 	if (!g_fd)
 		g_fd = open(LOG, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     real_malloc = dlsym(RTLD_NEXT, "malloc");
+	s.time = time(NULL);
 	s.type = MALLOC;
     s.ptr = real_malloc(size);
 	s.size = size;
@@ -32,6 +33,7 @@ void			free(void *ptr)
 	if (!g_fd)
 		g_fd = open(LOG, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
+	s.time = time(NULL);
 	s.type = FREE;
 	s.size = 0;
 	s.ptr = ptr;
