@@ -2,20 +2,15 @@
 #define _GNU_SOURCE
 #define LOG "memory.log"
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <aio.h>
 #include <fcntl.h>
 #include <dlfcn.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <unistd.h>
-#include <stdint.h>
 #include "profiler.h"
 
 int				g_fd;
 
-void			*malloc(size_t size) {
+void			*malloc(size_t size)
+{
 	struct data	s;
     void		*(*real_malloc)(size_t);
 
@@ -29,7 +24,8 @@ void			*malloc(size_t size) {
     return (s.ptr);
 }
 
-void			free(void *ptr) {
+void			free(void *ptr)
+{
 	struct data	s;
     void		(*real_free)(void *);
 
