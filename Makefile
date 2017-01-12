@@ -20,4 +20,4 @@ $(READER): reader.c profiling.h
 	$(CC) $(CFLAGS) -include profiling.h $< -o $@
 
 clean:
-	$(RM) $(LIB) $(NAME) $(READER) memory.log
+	$(RM) $(LIB) $(NAME) $(READER) memory.log *~

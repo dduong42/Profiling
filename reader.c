@@ -5,16 +5,16 @@
 #include <unistd.h>
 #include "profiling.h"
 
-void				usage(void)
+void usage(void)
 {
 	fprintf(stderr, "Usage: reader [--json] <log_file>\n");
 	exit(1);
 }
 
-void				print_data(struct data *s)
+void print_data(struct data *s)
 {
-	struct tm		tm;
-	char			time_s[32];
+	struct tm tm;
+	char time_s[32];
 
 	if (localtime_r(&s->time, &tm) == NULL) {
 		perror("localtime_r");
@@ -25,38 +25,42 @@ void				print_data(struct data *s)
 		exit(1);
 	}
 	if (s->type == MALLOC)
-		printf("%s MALLOC: ptr: %p size: %ld\n", time_s, s->ptr, s->size);
+		printf("%s MALLOC: ptr: %p size: %ld\n", time_s, s->ptr,
+		       s->size);
 	else if (s->type == FREE)
 		printf("%s FREE: ptr: %p\n", time_s, s->ptr);
 	else {
-		fprintf(stderr, "Wrong data, type is neither FREE nor MALLOC.\n");
+		fprintf(stderr,
+			"Wrong data, type is neither FREE nor MALLOC.\n");
 		exit(1);
 	}
 }
 
-void				print_data_json(struct data *s)
+void print_data_json(struct data *s)
 {
-	char	*str_type;
+	char *str_type;
 
 	if (s->type == MALLOC)
 		str_type = "malloc";
 	else if (s->type == FREE)
 		str_type = "free";
 	else {
-		fprintf(stderr, "Wrong data, type is neither FREE nor MALLOC.\n");
+		fprintf(stderr,
+			"Wrong data, type is neither FREE nor MALLOC.\n");
 		exit(1);
 	}
-	printf("{\"type\":%s,\"time\":%ld,\"ptr\":%p,\"size\":%ld}", str_type, s->time, s->ptr, s->size);
+	printf("{\"type\":%s,\"time\":%ld,\"ptr\":%p,\"size\":%ld}", str_type,
+	       s->time, s->ptr, s->size);
 }
 
-int					main(int ac, char **av)
+int main(int ac, char **av)
 {
-	FILE			*handler;
-	struct data		s;
-	int				json_flag;
-	int				remaining_ac;
-	int				c;
-	struct option	opts[] = {
+	FILE *handler;
+	struct data s;
+	int json_flag;
+	int remaining_ac;
+	int c;
+	struct option opts[] = {
 		{"json", no_argument, &json_flag, 1},
 		{0, 0, 0, 0}
 	};
@@ -82,15 +86,12 @@ int					main(int ac, char **av)
 		putchar('[');
 		fread(&s, sizeof(s), 1, handler);
 		print_data_json(&s);
-		while (fread(&s, sizeof(s), 1, handler) == 1)
-		{
+		while (fread(&s, sizeof(s), 1, handler) == 1) {
 			putchar(',');
 			print_data_json(&s);
 		}
 		puts("]");
-	}
-	else
-	{
+	} else {
 		while (fread(&s, sizeof(s), 1, handler) == 1)
 			print_data(&s);
 	}
