@@ -11,10 +11,10 @@ RM = rm -f
 all: $(LIB) $(NAME) $(READER)
 
 $(NAME): benchmark/main.c
-	$(CC) $< -o $@
+	$(CC) $(CFLAGS) $< -o $@
 
 $(LIB): profiling.c profiling.h
-	$(CC) $(CFLAGS) -include profiling.h -shared -fPIC -o $@ $< -ldl -lrt
+	$(CC) $(CFLAGS) -include profiling.h -shared -fPIC -o $@ $< -ldl
 
 $(READER): reader.c profiling.h
 	$(CC) $(CFLAGS) -include profiling.h $< -o $@
